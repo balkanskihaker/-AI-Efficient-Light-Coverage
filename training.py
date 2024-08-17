@@ -6,6 +6,8 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.optimizers import Adam
 
+NUM_OF_TRAINING_IMG = 1000
+
 def load_data(images_path, positions_path, num_examples, prefix):
     images = []
     positions = []
@@ -36,21 +38,20 @@ images_path = 'training/images'
 positions_path = 'training/positions'
 
 # Load training data
-num_training_examples = 100
-images, positions = load_data(images_path, positions_path, num_training_examples, 'training_example')
+images, positions = load_data(images_path, positions_path, NUM_OF_TRAINING_IMG, 'training_example')
 
 # Normalize images
 images = images / 255.0
 images = images[..., np.newaxis]  # Add channel dimension
 
 # Reshape positions
-positions = positions.reshape(num_training_examples, -1)
+positions = positions.reshape(NUM_OF_TRAINING_IMG, -1)
 
 # Split data into training and validation sets
-train_images = images[:80]
-train_positions = positions[:80]
-val_images = images[80:]
-val_positions = positions[80:]
+train_images = images[:900]
+train_positions = positions[:900]
+val_images = images[100:]
+val_positions = positions[100:]
 
 def build_cnn(input_shape, num_outputs):
     model = Sequential([
@@ -65,7 +66,7 @@ def build_cnn(input_shape, num_outputs):
     return model
 
 num_lights = 2
-input_shape = (15, 15, 1)  # Adjust based on your image size
+input_shape = (16, 16, 1)  # Adjust based on your image size
 num_outputs = 2 * num_lights  # For x and y coordinates of each light source
 
 model = build_cnn(input_shape, num_outputs)
@@ -74,7 +75,7 @@ model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
 model.summary()
 
 # Train the model
-model.fit(train_images, train_positions, epochs=200, batch_size=16, validation_data=(val_images, val_positions))
+model.fit(train_images, train_positions, epochs=50, batch_size=10, validation_data=(val_images, val_positions))
 
 # Save the model
 model.save('light_position_cnn_model.keras')

@@ -4,6 +4,9 @@ from PIL import Image
 from time import time
 from worker_module import generate_room, search_optimal_lights_multi
 
+NUM_OF_TRAINING_IMG = 1000
+NUM_OF_TESTING_IMG = 50
+
 # Function for saving the images
 def save_room_image(room, filename):
     room_array = np.array(room, dtype=np.uint8)  # Convert the list to a NumPy array
@@ -20,11 +23,11 @@ def save_optimal_positions(positions, filename):
 
 if __name__ == '__main__':
     # Hyperparameters
-    image_width = 15
-    image_height = 15
+    image_width = 16
+    image_height = 16
     wall_density = 0.1
     num_lights = 2
-    ray_spread = 2
+    ray_spread = 6
 
     # Ensuring the same directories hierarchy
     training_path = 'training'
@@ -36,7 +39,7 @@ if __name__ == '__main__':
         os.makedirs(os.path.join(training_path, 'positions'))
 
     # Creating the training dataset
-    for training_example in range(100):
+    for training_example in range(NUM_OF_TRAINING_IMG):
         room = generate_room(image_height, image_width, wall_density)
         
         image_filename = os.path.join(training_path, 'images', f'training_example_{training_example}.png')
@@ -53,7 +56,7 @@ if __name__ == '__main__':
         os.makedirs(os.path.join(test_path, 'positions'))
 
     # Creating the test dataset
-    for test_example in range(30):
+    for test_example in range(NUM_OF_TESTING_IMG):
         room = generate_room(image_height, image_width, wall_density)
         
         image_filename = os.path.join(test_path, 'images', f'test_example_{test_example}.png')
