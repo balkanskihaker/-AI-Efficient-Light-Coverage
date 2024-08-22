@@ -4,7 +4,7 @@ from PIL import Image
 from time import time
 from worker_module import generate_room, search_optimal_lights_multi
 
-NUM_OF_TRAINING_IMG = 1000
+NUM_OF_TRAINING_IMG = 300
 NUM_OF_TESTING_IMG = 50
 
 # Function for saving the images
